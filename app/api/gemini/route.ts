@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
     const summary = summaryResponse.text?.trim() || "No summary generated.";
 
-    const quizPrompt = `Generate 5 multiple choice questions based on this article: ${article.content}. Return the response in this exact JSON format:
+    const quizPrompt = `Generate 5 multiple choice questions based on this article: ${summary}. Return the response in this exact JSON format:
       [
         {
           "question": "Question text here",
@@ -31,10 +31,18 @@ export async function POST(req: NextRequest) {
       model: "gemini-2.5-flash",
       contents: quizPrompt,
     });
+    const extractJsonArray = (t: string) => {
+      const match = t.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+      return match ? match[1].trim() : t.trim();
+    };
+    const text = quizResponse as any;
 
-    const quiz = quizResponse.text?.trim() || "[]";
+    const cleaned = extractJsonArray(quizResponse.text || text);
+    const quizList = JSON.parse(cleaned);
 
-    return NextResponse.json({ summary, quiz });
+    // const quiz = quizResponse.text?.trim() || "[]";
+
+    return NextResponse.json({ summary, quizList });
   } catch (error: any) {
     console.error("Error in /api/gemeni:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

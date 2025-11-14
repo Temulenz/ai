@@ -10,6 +10,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [step, setStep] = useState(2);
+  const [quiz, setQuiz] = useState([]);
 
   const generateSummary = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +32,7 @@ export default function HomePage() {
 
       const data = await response.json();
       console.log({ data });
+      setQuiz(data.quizList);
 
       if (data.summary) {
         setSummary(data.summary);
@@ -45,76 +47,79 @@ export default function HomePage() {
       setLoading(false);
     }
   };
+  console.log({ quiz });
   return (
-    <div className="px-64 py-[112px]   bg-accent">
-      {/* {step === 1 && ( */}
-      <div>
-        <div className="border rounded-lg p-7 bg-white ">
-          <div className="flex">
-            <img src="Vevtor.png" />
-            <h1 className="text-2xl font-semibold">Article Quiz Generator</h1>
-          </div>
-
-          <p className="pt-2">
-            Take a quick test about your knowledge from your content
-          </p>
-
-          <div className="py-[28px]">
+    <div>
+      <div className="px-64 py-[112px]   bg-accent">
+        {/* {step === 1 && ( */}
+        <div>
+          <div className="border rounded-lg p-7 bg-white ">
             <div className="flex">
-              <img className="pr-[3.5px]" src="tittle.svg" alt="" />
-              <p>Article Title</p>
+              <img src="Vevtor.png" />
+              <h1 className="text-2xl font-semibold">Article Quiz Generator</h1>
             </div>
 
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter a title for your article..."
-              className="w-full border mt-2 rounded-md p-3"
-            />
-          </div>
+            <p className="pt-2">
+              Take a quick test about your knowledge from your content
+            </p>
 
-          <div className="pb-[20px]">
-            <div className="flex">
-              <img className="pr-[3.5px]" src="content.svg" alt="" />
-              <p>Article Content</p>
+            <div className="py-[28px]">
+              <div className="flex">
+                <img className="pr-[3.5px]" src="tittle.svg" alt="" />
+                <p>Article Title</p>
+              </div>
+
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter a title for your article..."
+                className="w-full border mt-2 rounded-md p-3"
+              />
             </div>
 
-            <textarea
-              value={article}
-              onChange={(e) => setArticle(e.target.value)}
-              placeholder="Paste your article content here..."
-              className="w-full border mt-2 rounded-md pb-[92px] px-3 pt-2"
-            />
-          </div>
+            <div className="pb-[20px]">
+              <div className="flex">
+                <img className="pr-[3.5px]" src="content.svg" alt="" />
+                <p>Article Content</p>
+              </div>
 
-          <div className="flex justify-end">
-            <button
-              onClick={generateSummary}
-              disabled={loading}
-              className="mt-3 bg-black text-white px-4 py-2 rounded-md"
-            >
-              {loading ? "Generating..." : "Generate Summary"}
-            </button>
+              <textarea
+                value={article}
+                onChange={(e) => setArticle(e.target.value)}
+                placeholder="Paste your article content here..."
+                className="w-full border mt-2 rounded-md pb-[92px] px-3 pt-2"
+              />
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                onClick={generateSummary}
+                disabled={loading}
+                className="mt-3 bg-black text-white px-4 py-2 rounded-md"
+              >
+                {loading ? "Generating..." : "Generate Summary"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      {/* // )} */}
+        {/* // )} */}
 
-      {/* {step === 2 && ( */}
-      <Summery
-        setStep={setStep}
-        title={title}
-        summary={summary}
-        article={article}
-      ></Summery>
-      {/* )} */}
+        {/* {step === 2 && ( */}
+        <Summery
+          setStep={setStep}
+          title={title}
+          summary={summary}
+          article={article}
+        ></Summery>
+        {/* )} */}
 
-      {/* {step === 3 && ( */}
-      <div>
-        <Quiz></Quiz>
+        {/* {step === 3 && ( */}
+        <div>
+          <Quiz quiz={quiz}></Quiz>
+        </div>
+        {/* )} */}
       </div>
-      {/* )} */}
     </div>
   );
 }
